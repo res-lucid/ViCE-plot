@@ -14,6 +14,7 @@
       --radius:16px;
       --accent:#7aa2ff;
     }
+
     @media (prefers-color-scheme: light){
       :root{
         --bg:#fafafa;
@@ -24,7 +25,9 @@
         --accent:#2f6bff;
       }
     }
-    *{box-sizing:border-box}
+
+    *{ box-sizing:border-box; }
+
     body{
       margin:0;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
@@ -32,43 +35,51 @@
       color:var(--text);
       line-height:1.5;
     }
+
     .wrap{
       max-width:760px;
       margin:48px auto;
       padding:0 18px 60px;
     }
+
     .back{
       display:inline-block;
       margin-bottom:18px;
       color:var(--muted);
       text-decoration:none;
     }
+
     h1{
       margin:0 0 6px;
       font-size:28px;
     }
+
     .sub{
       margin:0 0 20px;
       color:var(--muted);
       font-size:14px;
     }
+
     .panel{
       border:1px solid var(--border);
       background:var(--panel);
       border-radius:var(--radius);
       padding:18px;
     }
+
     .row{
       display:grid;
       grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
       gap:12px;
       margin-bottom:12px;
     }
+
     label{
       display:block;
       font-size:13px;
       color:var(--muted);
     }
+
     input, select{
       width:100%;
       margin-top:6px;
@@ -79,6 +90,7 @@
       color:var(--text);
       font:inherit;
     }
+
     .linkbox{
       margin-top:14px;
       padding:12px;
@@ -86,6 +98,7 @@
       border-radius:10px;
       word-break:break-all;
     }
+
     .linkbox a{
       color:var(--accent);
       text-decoration:none;
@@ -96,7 +109,7 @@
   <div class="wrap">
     <a class="back" href="../">← Back</a>
     <h1>Simulations</h1>
-    <p class="sub">Build a link to any simulation HTML.</p>
+    <p class="sub">Build a direct link to any simulation HTML.</p>
 
     <div class="panel">
       <div class="row">
@@ -110,14 +123,16 @@
 
         <label>
           Simulation ID
-          <input id="simid" placeholder="2667982444" />
+          <select id="simid"></select>
         </label>
       </div>
 
       <div class="row">
         <label>
           Model
-          <input id="model" value="lr" />
+          <select id="model">
+            <option value="lr">lr</option>
+          </select>
         </label>
 
         <label>
@@ -142,49 +157,74 @@
       </div>
 
       <div class="linkbox">
-        <a id="out" href="#">Enter a simulation ID</a>
+        <a id="out" href="#">Select a simulation</a>
       </div>
     </div>
   </div>
 
   <script>
-    const ids = ["cls", "simid", "model", "metric", "n"];
+    const SIM_IDS = {
+      "6-class": [
+        "2667982444",
+        "2421311237",
+        "996765299"
+      ],
+      "7-class": [
+        "2974012476",
+        "996765299",
+        "3228988777"
+      ]
+    };
+
     const $ = id => document.getElementById(id);
-    const params = new URLSearchParams(location.search);
 
-    ids.forEach(id => {
-      const v = params.get(id);
-      if (v) $(id).value = v;
-    });
-
-    function update() {
+    function fillIds() {
       const cls = $("cls").value;
-      const simid = $("simid").value.trim();
-      const model = $("model").value.trim() || "lr";
+      const simid = $("simid");
+      const ids = SIM_IDS[cls] || [];
+      simid.innerHTML = ids.map(x => `<option value="${x}">${x}</option>`).join("");
+    }
+
+    function updateLink() {
+      const cls = $("cls").value;
+      const simid = $("simid").value;
+      const model = $("model").value;
       const metric = $("metric").value;
       const n = $("n").value;
-      const out = $("out");
-
-      if (!simid) {
-        out.textContent = "Enter a simulation ID";
-        out.removeAttribute("href");
-        return;
-      }
 
       const href = `../${cls}/${simid}_${model}_${metric}_n${n}.html`;
-      out.href = href;
-      out.textContent = href;
+      $("out").href = href;
+      $("out").textContent = href;
 
       const q = new URLSearchParams({ cls, simid, model, metric, n });
       history.replaceState(null, "", `?${q.toString()}`);
     }
 
-    ids.forEach(id => {
-      $(id).addEventListener("input", update);
-      $(id).addEventListener("change", update);
+    function loadFromUrl() {
+      const q = new URLSearchParams(location.search);
+
+      if (q.get("cls")) $("cls").value = q.get("cls");
+      fillIds();
+
+      if (q.get("simid")) $("simid").value = q.get("simid");
+      if (q.get("model")) $("model").value = q.get("model");
+      if (q.get("metric")) $("metric").value = q.get("metric");
+      if (q.get("n")) $("n").value = q.get("n");
+
+      updateLink();
+    }
+
+    $("cls").addEventListener("change", () => {
+      fillIds();
+      updateLink();
     });
 
-    update();
+    $("simid").addEventListener("change", updateLink);
+    $("model").addEventListener("change", updateLink);
+    $("metric").addEventListener("change", updateLink);
+    $("n").addEventListener("change", updateLink);
+
+    loadFromUrl();
   </script>
 </body>
 </html>
