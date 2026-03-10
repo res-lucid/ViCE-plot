@@ -31,12 +31,14 @@
     }
 
     * { box-sizing: border-box; }
+
     body{
       margin: 0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      background: radial-gradient(1200px 800px at 20% 0%, rgba(122,162,255,.18), transparent 60%),
-                  radial-gradient(900px 600px at 90% 10%, rgba(255,122,214,.10), transparent 55%),
-                  var(--bg);
+      background:
+        radial-gradient(1200px 800px at 20% 0%, rgba(122,162,255,.18), transparent 60%),
+        radial-gradient(900px 600px at 90% 10%, rgba(255,122,214,.10), transparent 55%),
+        var(--bg);
       color: var(--text);
       line-height: 1.5;
     }
@@ -157,66 +159,82 @@
 </head>
 
 <body>
-<div class="grid">
-  <a class="card" href="glass/">
-    <div class="inner">
+  <div class="wrap">
+    <header>
       <div>
-        <p class="title">Glass</p>
-        <p class="meta">ND structure embedding • interactive</p>
+        <h1>Bokeh Gallery</h1>
+        <p class="sub">Interactive plots hosted on GitHub Pages.</p>
       </div>
-      <div class="arrow" aria-hidden="true">↗</div>
-    </div>
-  </a>
+      <div class="pill">Last updated: <span id="updated">—</span></div>
+    </header>
 
-  <a class="card" href="obesity/">
-    <div class="inner">
-      <div>
-        <p class="title">Obesity</p>
-        <p class="meta">Clusters, performance regions</p>
-      </div>
-      <div class="arrow" aria-hidden="true">↗</div>
-    </div>
-  </a>
+    <div class="grid">
+      <a class="card" href="glass/">
+        <div class="inner">
+          <div>
+            <p class="title">Glass</p>
+            <p class="meta">ND structure embedding • interactive</p>
+          </div>
+          <div class="arrow" aria-hidden="true">↗</div>
+        </div>
+      </a>
 
-  <a class="card" href="education/">
-    <div class="inner">
-      <div>
-        <p class="title">Education</p>
-        <p class="meta">7-class dataset exploration</p>
-      </div>
-      <div class="arrow" aria-hidden="true">↗</div>
-    </div>
-  </a>
+      <a class="card" href="obesity/">
+        <div class="inner">
+          <div>
+            <p class="title">Obesity</p>
+            <p class="meta">Clusters, performance regions</p>
+          </div>
+          <div class="arrow" aria-hidden="true">↗</div>
+        </div>
+      </a>
 
-  <a class="card" href="bias-variance/">
-    <div class="inner">
-      <div>
-        <p class="title">Simulations</p>
-        <p class="meta">6-class and 7-class runs</p>
-      </div>
-      <div class="arrow" aria-hidden="true">↗</div>
-    </div>
-  </a>
+      <a class="card" href="education/">
+        <div class="inner">
+          <div>
+            <p class="title">Education</p>
+            <p class="meta">7-class dataset exploration</p>
+          </div>
+          <div class="arrow" aria-hidden="true">↗</div>
+        </div>
+      </a>
 
-  <!-- Example extra card -->
-  <!--
-  <a class="card" href="other_plot.html">
-    <div class="inner">
-      <div>
-        <p class="title">Other plot</p>
-        <p class="meta">Add a short description</p>
-      </div>
-      <div class="arrow" aria-hidden="true">↗</div>
+      <a class="card" href="bias-variance/">
+        <div class="inner">
+          <div>
+            <p class="title">Simulations</p>
+            <p class="meta">6-class and 7-class runs</p>
+          </div>
+          <div class="arrow" aria-hidden="true">↗</div>
+        </div>
+      </a>
+
+      <!-- Example extra card -->
+      <!--
+      <a class="card" href="other_plot.html">
+        <div class="inner">
+          <div>
+            <p class="title">Other plot</p>
+            <p class="meta">Add a short description</p>
+          </div>
+          <div class="arrow" aria-hidden="true">↗</div>
+        </div>
+      </a>
+      -->
     </div>
-  </a>
-  -->
-</div>
-</div>
+
+    <footer>
+      Open any dataset to view its interactive HTML pages.
+    </footer>
+  </div>
 
   <script>
-    // lightweight "last updated" label using build time (client-side)
     const d = new Date(document.lastModified);
-    const fmt = d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "2-digit" });
+    const fmt = d.toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "short",
+      day: "2-digit"
+    });
     document.getElementById("updated").textContent = isNaN(d) ? "—" : fmt;
   </script>
 </body>
