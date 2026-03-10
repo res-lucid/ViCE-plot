@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Simulation Gallery</title>
+  <style>
+    :root{
+      --bg:#0b0c10;
+      --panel:#12141b;
+      --text:#e8e8ea;
+      --muted:#a7a7ad;
+      --border:rgba(255,255,255,.10);
+      --radius:16px;
+      --accent:#7aa2ff;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#fafafa;
+        --panel:#ffffff;
+        --text:#111214;
+        --muted:#5b5e66;
+        --border:rgba(0,0,0,.08);
+        --accent:#2f6bff;
+      }
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif;
+      background:var(--bg);
+      color:var(--text);
+      line-height:1.5;
+    }
+    .wrap{
+      max-width:760px;
+      margin:48px auto;
+      padding:0 18px 60px;
+    }
+    .back{
+      display:inline-block;
+      margin-bottom:18px;
+      color:var(--muted);
+      text-decoration:none;
+    }
+    h1{
+      margin:0 0 6px;
+      font-size:28px;
+    }
+    .sub{
+      margin:0 0 20px;
+      color:var(--muted);
+      font-size:14px;
+    }
+    .panel{
+      border:1px solid var(--border);
+      background:var(--panel);
+      border-radius:var(--radius);
+      padding:18px;
+    }
+    .row{
+      display:grid;
+      grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+      gap:12px;
+      margin-bottom:12px;
+    }
+    label{
+      display:block;
+      font-size:13px;
+      color:var(--muted);
+    }
+    input, select{
+      width:100%;
+      margin-top:6px;
+      padding:10px 12px;
+      border-radius:10px;
+      border:1px solid var(--border);
+      background:transparent;
+      color:var(--text);
+      font:inherit;
+    }
+    .linkbox{
+      margin-top:14px;
+      padding:12px;
+      border:1px solid var(--border);
+      border-radius:10px;
+      word-break:break-all;
+    }
+    .linkbox a{
+      color:var(--accent);
+      text-decoration:none;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="back" href="../">← Back</a>
+    <h1>Simulations</h1>
+    <p class="sub">Build a link to any simulation HTML.</p>
+
+    <div class="panel">
+      <div class="row">
+        <label>
+          Class folder
+          <select id="cls">
+            <option value="6-class">6-class</option>
+            <option value="7-class">7-class</option>
+          </select>
+        </label>
+
+        <label>
+          Simulation ID
+          <input id="simid" placeholder="2667982444" />
+        </label>
+      </div>
+
+      <div class="row">
+        <label>
+          Model
+          <input id="model" value="lr" />
+        </label>
+
+        <label>
+          Metric
+          <select id="metric">
+            <option value="var">var</option>
+            <option value="bias2">bias2</option>
+            <option value="mse">mse</option>
+          </select>
+        </label>
+
+        <label>
+          n
+          <select id="n">
+            <option value="10000">10000</option>
+            <option value="2500">2500</option>
+            <option value="1000">1000</option>
+            <option value="500">500</option>
+            <option value="250">250</option>
+          </select>
+        </label>
+      </div>
+
+      <div class="linkbox">
+        <a id="out" href="#">Enter a simulation ID</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const ids = ["cls", "simid", "model", "metric", "n"];
+    const $ = id => document.getElementById(id);
+    const params = new URLSearchParams(location.search);
+
+    ids.forEach(id => {
+      const v = params.get(id);
+      if (v) $(id).value = v;
+    });
+
+    function update() {
+      const cls = $("cls").value;
+      const simid = $("simid").value.trim();
+      const model = $("model").value.trim() || "lr";
+      const metric = $("metric").value;
+      const n = $("n").value;
+      const out = $("out");
+
+      if (!simid) {
+        out.textContent = "Enter a simulation ID";
+        out.removeAttribute("href");
+        return;
+      }
+
+      const href = `../${cls}/${simid}_${model}_${metric}_n${n}.html`;
+      out.href = href;
+      out.textContent = href;
+
+      const q = new URLSearchParams({ cls, simid, model, metric, n });
+      history.replaceState(null, "", `?${q.toString()}`);
+    }
+
+    ids.forEach(id => {
+      $(id).addEventListener("input", update);
+      $(id).addEventListener("change", update);
+    });
+
+    update();
+  </script>
+</body>
+</html>
